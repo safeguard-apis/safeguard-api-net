@@ -41,19 +41,32 @@ namespace SafeGuardServerAPI
             try
             {
                 string json = "{\"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
-                return executePost("/context_must_use_hw_token.json", json);
+                return executePost("/v1.2/context_must_use_hw_token.json", json);
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-        public Boolean ValidateTransactionToken(string token, string otp, string context, string user)
+        public Boolean ValidateOtp(string transactionToken, string otp, string context, string user)
+        {
+            try
+            {
+                string json = "{\"token\": \"" + transactionToken + "\", \"otp\": \"" + otp + "\", \"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
+                return executePost("/v1.2/validate_otp.json", json);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public Boolean ValidateTransactionToken(string token, string context, string user)
         {
             try
             {
                 string json = "{\"token\": \"" + token + "\", \"otp\": \"" + otp + "\", \"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
-                return executePost("/validate_transaction_token.json", json);
+                return executePost("/v1.2/validate_transaction_token.json", json);
             }
             catch (Exception e)
             {
@@ -73,7 +86,7 @@ namespace SafeGuardServerAPI
                     json = Encoding.Default.GetString(ms.ToArray());
                 }
                 json = "{\"token\":\"" + token + "\", \"locators\":" + json + "}";
-                return executePost("/insert_issue_log_in_transaction_token.json", json);
+                return executePost("/v1.2/insert_issue_log_in_transaction_token.json", json);
             }
             catch (Exception e)
             {
