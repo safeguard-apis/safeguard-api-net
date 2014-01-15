@@ -65,7 +65,7 @@ namespace SafeGuardServerAPI
         {
             try
             {
-                string json = "{\"token\": \"" + token + "\", \"otp\": \"" + otp + "\", \"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
+                string json = "{\"token\": \"" + token + "\", \"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
                 return executePost("/v1.2/validate_transaction_token.json", json);
             }
             catch (Exception e)
