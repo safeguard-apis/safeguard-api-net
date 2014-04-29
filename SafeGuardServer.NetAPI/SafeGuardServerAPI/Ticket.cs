@@ -9,13 +9,14 @@ namespace SafeGuardServerAPI
     [DataContract(Name = "ticket")]
     public class Ticket
     {
-        public Ticket(String number, DateTime issuedAt, String passenger, Decimal price, String Currency)
+        public Ticket(String number, DateTime issuedAt, String passenger, Decimal price, String Currency, List<FlightGroup> flightGroups)
         { 
             this.Number = number;
             this.IssuedAt = issuedAt;
             this.Passenger = passenger;
             this.Price = price;
             this.Currency = Currency;
+            this.flightGroups = flightGroups;
         }
 
         [DataMember(Name = "number")]
@@ -34,6 +35,9 @@ namespace SafeGuardServerAPI
 
         [DataMember(Name = "price")]
         Decimal Price { set; get; }
+
+        [DataMember(Name = "flight_groups")]
+        List<FlightGroup> flightGroups { set; get; }
 
         [OnSerializing]
         void OnSerializing(StreamingContext context)
