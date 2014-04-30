@@ -17,6 +17,27 @@ namespace SafeGuardServerAPI
             this.Tickets = tickets;
         }
 
+        public Locator(String locator, Boolean isInternational)
+        {
+            this.Loc = locator;
+            this.IsInternational = isInternational;
+            this.Payments = new List<Payment>();
+            this.Tickets = new List<Ticket>();
+        }
+
+        public void AddPayment(String type) {
+            this.Payments.Add(new Payment(type)); 
+        }
+
+        public void AddPayment(CreditCardInfo card)
+        {
+            this.Payments.Add(new Payment(card));
+        }
+
+        public void AddTicket(Ticket ticket) {
+            this.Tickets.Add(ticket);
+        }
+
         [DataMember(Name = "loc")]
         String Loc{set; get;}
 

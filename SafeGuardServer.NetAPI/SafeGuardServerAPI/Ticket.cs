@@ -19,6 +19,28 @@ namespace SafeGuardServerAPI
             this.flightGroups = flightGroups;
         }
 
+        public Ticket(String number, DateTime issuedAt, String passenger, Decimal price, String Currency)
+        {
+            this.Number = number;
+            this.IssuedAt = issuedAt;
+            this.Passenger = passenger;
+            this.Price = price;
+            this.Currency = Currency;
+            this.flightGroups = new List<FlightGroup>();
+        }
+
+
+        public void AddFlightGroup(FlightGroup group){
+            this.flightGroups.Add(group);
+        }
+
+
+        public void AddFlightGroup(String Origin, String Destination, DateTime DepartureAt, DateTime ArrivalAt)
+        {
+            this.flightGroups.Add(new FlightGroup(Origin, Destination, DepartureAt, ArrivalAt));
+        }
+        
+
         [DataMember(Name = "number")]
         String Number { set; get; }
 

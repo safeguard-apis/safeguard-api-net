@@ -18,7 +18,6 @@ namespace SafeGuardServerAPI
         {
             this.Type = "credit_card";
             this.CreditCardInfo = info;
-
         }
 
         [DataMember(Name = "type")]

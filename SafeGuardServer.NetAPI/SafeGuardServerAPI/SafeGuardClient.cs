@@ -13,6 +13,7 @@ namespace SafeGuardServerAPI
 {
     public class SafeGuardClient
     {
+        public enum Failures {PAYMENT = 1, EXPIRED = 2}
         private String ApplicationToken;
         private String Url;
 
@@ -40,19 +41,19 @@ namespace SafeGuardServerAPI
             try
             {
                 string json = "{\"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
-                return executePost("/v1.2/context_must_use_hw_token.json", json);
+                return executePost("/v2.0/context_must_use_hw_token.json", json);
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-        public Boolean ValidateOtp(string transactionToken, string otp, string context, string user)
+        public Boolean ValidateOtp(string transactionToken, string otp, string device_type)
         {
             try
             {
-                string json = "{\"token\": \"" + transactionToken + "\", \"otp\": \"" + otp + "\", \"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
-                return executePost("/v1.2/validate_otp.json", json);
+                string json = "{\"transaction_token\": \"" + transactionToken + "\", \"otp\": \"" + otp + "\", \"device_type\": \"" + device_type + "\"}";
+                return executePost("/v2.0/validate_otp.json", json);
             }
             catch (Exception e)
             {
@@ -60,12 +61,20 @@ namespace SafeGuardServerAPI
             }
         }
 
-        public Boolean ValidateTransactionToken(string token, string context, string user)
+        public Boolean NotifyFailure(string transactionToken, List<LocatorFailure> failures)
         {
             try
             {
-                string json = "{\"token\": \"" + token + "\", \"context\": \"" + context + "\", \"user\": \"" + user + "\"}";
-                return executePost("/v1.2/validate_transaction_token.json", json);
+                String json = "";
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(failures.GetType());
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    serializer.WriteObject(ms, failures);
+                    json = Encoding.Default.GetString(ms.ToArray());
+                }
+                json = "{\"transaction_token\":\"" + transactionToken + "\", \"errors\":" + json + "}";
+
+                return executePost("/v2.0/notify_failure.json", json);
             }
             catch (Exception e)
             {
@@ -73,7 +82,20 @@ namespace SafeGuardServerAPI
             }
         }
 
-        public List<Risk> AnalyzeRisk(List<Locator> locators, String token)
+        public Boolean ValidateTransactionToken(string transactionToken)
+        {
+            try
+            {
+                string json = "{\"transaction_token\": \"" + transactionToken + "\"}";
+                return executePost("/v2.0/validate_transaction_token.json", json);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<Risk> AnalyzeRisk(List<Locator> locators, String transactionToken)
         {
             string json = "";
             try
@@ -84,7 +106,7 @@ namespace SafeGuardServerAPI
                     serializer.WriteObject(ms, locators);
                     json = Encoding.Default.GetString(ms.ToArray());
                 }
-                json = "{\"transaction_token\":\"" + token + "\", \"locators\":" + json + "}";
+                json = "{\"transaction_token\":\"" + transactionToken + "\", \"locators\":" + json + "}";
                 
                              
                 return executePostToRisk("/v2.0/analyze_risk.json", json);
@@ -95,10 +117,7 @@ namespace SafeGuardServerAPI
             }
         }
 
-
-
-
-        public Boolean LogTicketsIssued(List<Locator> locators, String token)
+        public List<Risk> IssueLocators(List<Locator> locators, String transactionToken)
         {
             string json = "";
             try
@@ -109,8 +128,10 @@ namespace SafeGuardServerAPI
                     serializer.WriteObject(ms, locators);
                     json = Encoding.Default.GetString(ms.ToArray());
                 }
-                json = "{\"token\":\"" + token + "\", \"locators\":" + json + "}";
-                return executePost("/v1.2/insert_issue_log_in_transaction_token.json", json);
+                json = "{\"transaction_token\":\"" + transactionToken + "\", \"locators\":" + json + "}";
+
+
+                return executePostToRisk("/v2.0/issue_locators.json", json);
             }
             catch (Exception e)
             {
@@ -118,9 +139,10 @@ namespace SafeGuardServerAPI
             }
         }
 
-
+        
         private List<Risk> executePostToRisk(String relativeURL, String body)
         {
+            var parser = new SafeGuardJsonParser();
             var webRequest = GenerateWebRequest(relativeURL);
             webRequest.Method = "POST";
             webRequest.ContentType = "application/json";
@@ -137,30 +159,24 @@ namespace SafeGuardServerAPI
                 StreamReader reader = reader = new StreamReader(webResponse.GetResponseStream());
                 string resp = reader.ReadToEnd().Trim();
  
-                Dictionary<string, dynamic> parsedResp = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(resp);
                 if (webResponse.StatusCode == HttpStatusCode.OK)
-                {
-                    List l = parsedResp["locs_risk"]   
-                }
-
-                return null;
+                    return parser.parseAnalyzeSuccessResponse(resp);
+                throw new SafeGuardException("Invalid Response", -99);
+                
             }
             catch (WebException we)
             {
                 HttpWebResponse webResponse = ((HttpWebResponse)we.Response);
                 StreamReader reader = reader = new StreamReader(webResponse.GetResponseStream());
                 string resp = reader.ReadToEnd().Trim();
-                Dictionary<string, dynamic> parsedResp = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(resp);
-                
-                if(parsedResp["message"] != null)
-                    throw new SafeGuardException(parsedResp["message"], parsedResp["error_code"]);
-                throw we;
+                throw parser.buildSafeGuardException(resp);
             }
 
         }
 
         private Boolean executePost(String relativeURL, String body)
         {
+            var parser = new SafeGuardJsonParser();
             var webRequest = GenerateWebRequest(relativeURL);
             webRequest.Method = "POST";
             webRequest.ContentType = "application/json";
@@ -180,12 +196,10 @@ namespace SafeGuardServerAPI
             }
             catch (WebException we)
             {
-                if (((HttpWebResponse)we.Response).StatusCode == HttpStatusCode.NotFound)
-                    return false;
-                else if (((HttpWebResponse)we.Response).StatusCode == HttpStatusCode.Forbidden)
-                    return false;
-                else
-                    throw we;
+                HttpWebResponse webResponse = ((HttpWebResponse)we.Response);
+                StreamReader reader = reader = new StreamReader(webResponse.GetResponseStream());
+                string resp = reader.ReadToEnd().Trim();
+                throw parser.buildSafeGuardException(resp);
             }
         
         }

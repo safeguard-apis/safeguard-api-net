@@ -9,7 +9,7 @@ namespace SafeGuardServerAPI
     [DataContract(Name = "info")]
     public class CreditCardInfo
     {
-        public CreditCardInfo(String Name, String number) {
+        public CreditCardInfo(String Name, String Number) {
             this.Name = Name;
             this.Number = Number;
         }
