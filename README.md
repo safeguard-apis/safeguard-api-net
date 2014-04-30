@@ -23,7 +23,7 @@
 
 Faz a validação do token digitado pelo usuário
 
-```
+```c#
   public bool ValidateOtp(string transactionToken, string otp, string device_type);
 ```
 
@@ -31,7 +31,7 @@ Faz a validação do token digitado pelo usuário
 
 Verifica se a transactionToken é válida
 
-```
+```c#
   public bool ValidateTransactionToken(string transactionToken);
 ```
 
@@ -41,13 +41,13 @@ Verifica se a transactionToken é válida
 Analisa o grau de risco de uma lista de localizadores
 
 
-```
+```c#
   public List<Risk> AnalyzeRisk(List<Locator> locators, string transactionToken);
 ```
 
 #### Exemplo de uso
 
-```
+```c#
     //Instancia a API
     SafeGuardClient sg = new SafeGuardClient(transactionToken, "http://192.168.245.128:3010/");
 
@@ -77,14 +77,14 @@ Analisa o grau de risco de uma lista de localizadores
 Informa ao Safeguard a emissãp de  uma lista de localizadores
 
 
-```
+```c#
   public List<Risk> IssueLocators(List<Locator> locators, string transactionToken);
 ```
 
 #### Exemplo de uso
 
 
-```
+```c#
     //Instancia a API
     SafeGuardClient sg = new SafeGuardClient(transactionToken, "http://192.168.245.128:3010/");
 
@@ -112,13 +112,13 @@ Informa ao Safeguard a emissãp de  uma lista de localizadores
 
 Notifica o Safeguard falhas de emissão
 
-```
+```c#
   public bool NotifyFailure(string transactionToken, List<LocatorFailure> failures);
 ```
 
 
 #### Exemplo de Uso:
-```
+```c#
   SafeGuardClient sg = new SafeGuardClient(transactionToken, "http://192.168.245.128:3010/");
 
   //Criação de Falha
