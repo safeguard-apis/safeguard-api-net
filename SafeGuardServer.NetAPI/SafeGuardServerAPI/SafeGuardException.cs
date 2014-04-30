@@ -17,8 +17,8 @@ namespace SafeGuardServerAPI
                 this.ErrorCode = errorCode;
             }
 
-            String Message { set; get; }
-            decimal ErrorCode { set; get; }
+            public String Message { set; get; }
+            public decimal ErrorCode { set; get; }
 
     }
 }

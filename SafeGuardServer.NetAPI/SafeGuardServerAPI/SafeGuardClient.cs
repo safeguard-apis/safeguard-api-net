@@ -45,7 +45,7 @@ namespace SafeGuardServerAPI
             }
             catch (Exception e)
             {
-                throw e;
+                return false;
             }
         }
         public Boolean ValidateOtp(string transactionToken, string otp, string device_type)
@@ -57,6 +57,12 @@ namespace SafeGuardServerAPI
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(SafeGuardException))
+                {
+                    SafeGuardException sgException = (SafeGuardException)e;
+                    if (sgException.ErrorCode == -6)
+                        return false;
+                }
                 throw e;
             }
         }
@@ -91,6 +97,12 @@ namespace SafeGuardServerAPI
             }
             catch (Exception e)
             {
+                if (e.GetType() == typeof(SafeGuardException))
+                {
+                    SafeGuardException sgException = (SafeGuardException)e;
+                    if (sgException.ErrorCode == -7)
+                        return false;
+                }
                 throw e;
             }
         }

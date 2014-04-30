@@ -49,7 +49,7 @@ Analisa o grau de risco de uma lista de localizadores
 
 ```c#
     //Instancia a API
-    SafeGuardClient sg = new SafeGuardClient(transactionToken, "http://192.168.245.128:3010/");
+    SafeGuardClient sg = new SafeGuardClient(transactionToken, "SAFEGUARD_URL");
 
     //Criação de um localizador
     Locator loc = new Locator("LOC1", false);
@@ -86,7 +86,7 @@ Informa ao Safeguard a emissãp de  uma lista de localizadores
 
 ```c#
     //Instancia a API
-    SafeGuardClient sg = new SafeGuardClient(transactionToken, "http://192.168.245.128:3010/");
+    SafeGuardClient sg = new SafeGuardClient(transactionToken, "SAFEGUARD_URL");
 
     //Criação de um localizador
     Locator loc = new Locator("LOC1", false);
@@ -119,7 +119,7 @@ Notifica o Safeguard falhas de emissão
 
 #### Exemplo de Uso:
 ```c#
-  SafeGuardClient sg = new SafeGuardClient(transactionToken, "http://192.168.245.128:3010/");
+  SafeGuardClient sg = new SafeGuardClient(transactionToken, "SAFEGUARD_URL");
 
   //Criação de Falha
   List<LocatorFailure> failures = new List<LocatorFailure>();
