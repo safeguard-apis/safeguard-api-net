@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SafeGuardServerAPI
+namespace SafeGuardServerAPIV2
 {
     public class RiskItem
     {

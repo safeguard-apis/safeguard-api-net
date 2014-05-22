@@ -9,7 +9,7 @@ using System.Configuration;
 using System.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 
-namespace SafeGuardServerAPI
+namespace SafeGuardServerAPIV2
 {
     public class SafeGuardClient
     {

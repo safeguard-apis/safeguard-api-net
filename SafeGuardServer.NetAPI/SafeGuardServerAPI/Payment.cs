@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 
-namespace SafeGuardServerAPI
+namespace SafeGuardServerAPIV2
 {
     [DataContract(Name = "payment")]
     public class Payment
