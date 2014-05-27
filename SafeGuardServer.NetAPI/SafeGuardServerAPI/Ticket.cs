@@ -9,7 +9,7 @@ namespace SafeGuardServerAPIV2
     [DataContract(Name = "ticket")]
     public class Ticket
     {
-        public Ticket(String number, DateTime issuedAt, String passenger, Decimal price, String Currency, List<FlightGroup> flightGroups)
+        public Ticket(String number, DateTime issuedAt, String passenger, Decimal price, String Currency, List<FlightGroup> flightGroups, List<Payment> payments)
         { 
             this.Number = number;
             this.IssuedAt = issuedAt;
@@ -17,6 +17,7 @@ namespace SafeGuardServerAPIV2
             this.Price = price;
             this.Currency = Currency;
             this.flightGroups = flightGroups;
+            this.Payments = payments;
         }
 
         public Ticket(String number, DateTime issuedAt, String passenger, Decimal price, String Currency)
@@ -27,6 +28,7 @@ namespace SafeGuardServerAPIV2
             this.Price = price;
             this.Currency = Currency;
             this.flightGroups = new List<FlightGroup>();
+            this.Payments = new List<Payment>();
         }
 
 
@@ -39,7 +41,27 @@ namespace SafeGuardServerAPIV2
         {
             this.flightGroups.Add(new FlightGroup(Origin, Destination, DepartureAt, ArrivalAt));
         }
+
         
+        public void AddPayment(String type)
+        {
+            this.Payments.Add(new Payment(type));
+        }
+
+        public void AddPayment(String type, Decimal price)
+        {
+            this.Payments.Add(new Payment(type, price));
+        }
+
+        public void AddPayment(CreditCardInfo card)
+        {
+            this.Payments.Add(new Payment(card));
+        }
+
+        public void AddPayment(CreditCardInfo card, Decimal price)
+        {
+            this.Payments.Add(new Payment(card, price));
+        }
 
         [DataMember(Name = "number")]
         String Number { set; get; }
@@ -60,6 +82,9 @@ namespace SafeGuardServerAPIV2
 
         [DataMember(Name = "flight_groups")]
         List<FlightGroup> flightGroups { set; get; }
+        
+        [DataMember(Name = "payments")]
+        List<Payment> Payments { set; get; }
 
         [OnSerializing]
         void OnSerializing(StreamingContext context)

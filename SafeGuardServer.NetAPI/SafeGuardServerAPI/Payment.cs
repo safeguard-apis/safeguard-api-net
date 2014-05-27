@@ -14,10 +14,23 @@ namespace SafeGuardServerAPIV2
             this.Type = Type;
         }
 
+        public Payment(String Type, Decimal price)
+        {
+            this.Type = Type;
+            this.price = price;
+        }
+
         public Payment(CreditCardInfo info)
         {
             this.Type = "credit_card";
             this.CreditCardInfo = info;
+        }
+
+        public Payment(CreditCardInfo info, Decimal price)
+        {
+            this.Type = "credit_card";
+            this.CreditCardInfo = info;
+            this.price = price;
         }
 
         [DataMember(Name = "type")]
@@ -25,5 +38,8 @@ namespace SafeGuardServerAPIV2
 
         [DataMember(Name = "info")]
         CreditCardInfo CreditCardInfo { set; get; }
+
+        [DataMember(Name = "price")]
+        Decimal price { set; get; }
     }
 }
