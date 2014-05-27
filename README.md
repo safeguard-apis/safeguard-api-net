@@ -47,9 +47,11 @@ Analisa o grau de risco de uma lista de localizadores
 
 #### Exemplo de uso
 
+
+
 ```c#
     //Instancia a API
-    SafeGuardClient sg = new SafeGuardClient(transactionToken, "SAFEGUARD_URL");
+    SafeGuardServerAPIV2.SafeGuardClient sg = new SafeGuardServerAPIV2.SafeGuardClient(transactionToken, "SAFEGUARD_URL");
 
     //Criação de um localizador
     Locator loc = new Locator("LOC1", false);
@@ -57,12 +59,13 @@ Analisa o grau de risco de uma lista de localizadores
     //Criação de um ticket
     Ticket ticket = new Ticket("123321", new DateTime(), "MR PAX", 100, "BLR");
     ticket.AddFlightGroup("SAO", "RJ", new DateTime(), new DateTime());
-    loc.AddTicket(ticket);//Adição do ticket no localizador
 
     //Criação de um Cartão
     CreditCardInfo card  = new CreditCardInfo("teste", "12312312312");
-    loc.AddPayment(card);//Adição de uma forma de pagamento
+    ticket.AddPayment(card, 100.00);//Adição de uma forma de pagamento
     
+    loc.AddTicket(ticket);//Adição do ticket no localizador
+
     //Lista de localizadores
     List<Locator> locators = new List<Locator>();
     locators.Add(loc);
@@ -86,7 +89,7 @@ Informa ao Safeguard a emissãp de  uma lista de localizadores
 
 ```c#
     //Instancia a API
-    SafeGuardClient sg = new SafeGuardClient(transactionToken, "SAFEGUARD_URL");
+    SafeGuardServerAPIV2.SafeGuardClient sg = new SafeGuardServerAPIV2.SafeGuardClient(transactionToken, "SAFEGUARD_URL");
 
     //Criação de um localizador
     Locator loc = new Locator("LOC1", false);
@@ -94,11 +97,12 @@ Informa ao Safeguard a emissãp de  uma lista de localizadores
     //Criação de um ticket
     Ticket ticket = new Ticket("123321", new DateTime(), "MR PAX", 100, "BLR");
     ticket.AddFlightGroup("SAO", "RJ", new DateTime(), new DateTime());
-    loc.AddTicket(ticket);//Adição do ticket no localizador
 
     //Criação de um Cartão
     CreditCardInfo card  = new CreditCardInfo("teste", "12312312312");
-    loc.AddPayment(card);//Adição de uma forma de pagamento
+    ticket.AddPayment(card);//Adição de uma forma de pagamento
+
+    loc.AddTicket(ticket);//Adição do ticket no localizador
     
     //Lista de localizadores
     List<Locator> locators = new List<Locator>();
@@ -119,11 +123,36 @@ Notifica o Safeguard falhas de emissão
 
 #### Exemplo de Uso:
 ```c#
-  SafeGuardClient sg = new SafeGuardClient(transactionToken, "SAFEGUARD_URL");
+  SafeGuardServerAPIV2.SafeGuardClient sg = new SafeGuardServerAPIV2.SafeGuardClient(transactionToken, "SAFEGUARD_URL");
 
   //Criação de Falha
   List<LocatorFailure> failures = new List<LocatorFailure>();
   failures.Add(new LocatorFailure("LOC121", "Error"));
+
+  Boolean resp = sg.NotifyFailure(transactionToken, failures);
+```
+
+O Objeto LocatorFailure também aceita um Locator no seu construtor:
+
+```c#
+  SafeGuardServerAPIV2.SafeGuardClient sg = new SafeGuardServerAPIV2.SafeGuardClient(transactionToken, "SAFEGUARD_URL");
+
+  //Criação de um localizador
+  Locator loc = new Locator("LOC1", false);
+  
+  //Criação de um ticket
+  Ticket ticket = new Ticket("123321", new DateTime(), "MR PAX", 100, "BLR");
+  ticket.AddFlightGroup("SAO", "RJ", new DateTime(), new DateTime());
+
+  //Criação de um Cartão
+  CreditCardInfo card  = new CreditCardInfo("teste", "12312312312");
+  ticket.AddPayment(card);//Adição de uma forma de pagamento
+
+  loc.AddTicket(ticket);//Adição do ticket no localizador
+
+  //Criação de Falha
+  List<LocatorFailure> failures = new List<LocatorFailure>();
+  failures.Add(new LocatorFailure(loc, "Error"));
 
   Boolean resp = sg.NotifyFailure(transactionToken, failures);
 ```
