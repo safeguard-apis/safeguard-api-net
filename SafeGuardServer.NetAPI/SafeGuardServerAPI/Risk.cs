@@ -13,11 +13,11 @@ namespace SafeGuardServerAPIV2
             this.riskItems = riskItems;
         }
 
-        String Loc {set; get;}
+        public String Loc {set; get;}
 
-        float RiskScore { set; get; }
+        public float RiskScore { set; get; }
 
-        List<RiskItem> riskItems { set; get; }
+        public List<RiskItem> riskItems { set; get; }
     }
 }
 

@@ -11,7 +11,7 @@ namespace SafeGuardServerAPIV2
             this.Score = Score;
             this.Type = Type;
         }
-        String Type { set; get; }
-        int Score {set; get;}
+        public String Type { set; get; }
+        public int Score {set; get;}
     }
 }
