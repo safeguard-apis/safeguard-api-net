@@ -248,9 +248,8 @@ namespace SafeGuardServerAPIV2
             webRequest.Accept = "*/*";
             webRequest.Headers.Add("Accept-Encoding", "gzip,deflate,sdch");
             webRequest.Headers.Add("Accept-Language", "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4");
+            webRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             return webRequest;
         }
-
-        
     }
 }
